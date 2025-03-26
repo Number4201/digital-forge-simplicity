@@ -3,7 +3,13 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.3";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+// Make sure we are using the API key properly
+const resendApiKey = Deno.env.get("RESEND_API_KEY");
+if (!resendApiKey) {
+  console.error("RESEND_API_KEY environment variable is not set");
+}
+
+const resend = new Resend(resendApiKey);
 const NOTIFICATION_EMAIL = "theheydee@gmail.com";
 const FROM_EMAIL = "tvorba@digitalnikovari.cz";
 
@@ -30,6 +36,9 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { name, email, subject = "", message }: ContactFormData = await req.json();
 
+    // Logging data received for debugging
+    console.log("Received form data:", { name, email, subject, message });
+
     // Validace dat
     if (!name || !email || !message) {
       return new Response(
@@ -46,45 +55,72 @@ const handler = async (req: Request): Promise<Response> => {
     // Vytvoření Supabase klienta
     const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+    
+    if (!supabaseUrl || !supabaseKey) {
+      console.error("Supabase environment variables are not set properly");
+    }
+    
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Uložení do databáze
-    const { data, error: dbError } = await supabase
-      .from("contact_form_submissions")
-      .insert([{ name, email, message }]);
+    try {
+      const { data, error: dbError } = await supabase
+        .from("contact_form_submissions")
+        .insert([{ name, email, message }]);
 
-    if (dbError) {
-      console.error("Chyba při ukládání do databáze:", dbError);
-      // Pokračujeme s odesláním e-mailu i když se nepodařilo uložit do databáze
+      if (dbError) {
+        console.error("Chyba při ukládání do databáze:", dbError);
+        // Pokračujeme s odesláním e-mailu i když se nepodařilo uložit do databáze
+      } else {
+        console.log("Data uložena do databáze:", data);
+      }
+    } catch (dbError) {
+      console.error("Exception při ukládání do databáze:", dbError);
     }
 
     // Odeslání e-mailu
-    const emailResponse = await resend.emails.send({
-      from: `Digitální kováři <${FROM_EMAIL}>`,
-      to: [NOTIFICATION_EMAIL],
-      subject: `Nový kontakt: ${subject || "Kontaktní formulář"}`,
-      html: `
-        <h1>Nový kontaktní formulář</h1>
-        <p><strong>Jméno:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        ${subject ? `<p><strong>Předmět:</strong> ${subject}</p>` : ""}
-        <p><strong>Zpráva:</strong></p>
-        <p>${message.replace(/\n/g, "<br>")}</p>
-      `,
-    });
+    try {
+      console.log("Attempting to send email with Resend API");
+      console.log("API Key present:", !!resendApiKey);
+      
+      const emailResponse = await resend.emails.send({
+        from: `Digitální kováři <${FROM_EMAIL}>`,
+        to: [NOTIFICATION_EMAIL],
+        subject: `Nový kontakt: ${subject || "Kontaktní formulář"}`,
+        html: `
+          <h1>Nový kontaktní formulář</h1>
+          <p><strong>Jméno:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          ${subject ? `<p><strong>Předmět:</strong> ${subject}</p>` : ""}
+          <p><strong>Zpráva:</strong></p>
+          <p>${message.replace(/\n/g, "<br>")}</p>
+        `,
+      });
 
-    console.log("E-mail odeslán:", emailResponse);
+      console.log("E-mail odeslán:", emailResponse);
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        message: "Formulář byl úspěšně odeslán.",
-      }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
-    );
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: "Formulář byl úspěšně odeslán.",
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    } catch (emailError: any) {
+      console.error("Chyba při odesílání e-mailu:", emailError);
+      return new Response(
+        JSON.stringify({
+          error: `Chyba při odesílání e-mailu: ${emailError.message}`,
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
   } catch (error: any) {
     console.error("Chyba při zpracování kontaktního formuláře:", error);
     return new Response(
