@@ -3,13 +3,12 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.3";
 
-// Make sure we are using the API key properly
-const resendApiKey = Deno.env.get("RESEND_API_KEY");
-if (!resendApiKey) {
-  console.error("RESEND_API_KEY environment variable is not set");
-}
+// Define the Resend API key directly
+const RESEND_API_KEY = "re_JPvTaZko_5aE7M6YhsY7h4pxQhEFKRDXt";
 
-const resend = new Resend(resendApiKey);
+console.log("Initializing with Resend API key presence:", !!RESEND_API_KEY);
+
+const resend = new Resend(RESEND_API_KEY);
 const NOTIFICATION_EMAIL = "theheydee@gmail.com";
 const FROM_EMAIL = "tvorba@digitalnikovari.cz";
 
@@ -81,7 +80,9 @@ const handler = async (req: Request): Promise<Response> => {
     // Odeslání e-mailu
     try {
       console.log("Attempting to send email with Resend API");
-      console.log("API Key present:", !!resendApiKey);
+      console.log("API Key present:", !!RESEND_API_KEY);
+      console.log("Sending to:", NOTIFICATION_EMAIL);
+      console.log("Sending from:", `Digitální kováři <${FROM_EMAIL}>`);
       
       const emailResponse = await resend.emails.send({
         from: `Digitální kováři <${FROM_EMAIL}>`,
@@ -111,9 +112,11 @@ const handler = async (req: Request): Promise<Response> => {
       );
     } catch (emailError: any) {
       console.error("Chyba při odesílání e-mailu:", emailError);
+      console.error("Error details:", JSON.stringify(emailError));
       return new Response(
         JSON.stringify({
           error: `Chyba při odesílání e-mailu: ${emailError.message}`,
+          details: JSON.stringify(emailError)
         }),
         {
           status: 500,
