@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, Send, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -57,6 +57,19 @@ const ContactSection = () => {
                 Ať už máte jasnou představu o svém projektu nebo teprve hledáte inspiraci, 
                 jsme tu pro vás. Vyplňte formulář a my se vám ozveme, nebo nás rovnou kontaktujte některým z uvedených způsobů.
               </p>
+
+              <div className="bg-primary/10 rounded-xl p-4 mb-8 flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                  <Zap className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h4 className="text-base font-medium">Rychlá odezva</h4>
+                  <p className="text-muted-foreground">
+                    Odpovídáme na zprávy prakticky okamžitě mezi 7:00 - 22:00 každý den. 
+                    Neváhejte nás kontaktovat s jakýmkoliv dotazem.
+                  </p>
+                </div>
+              </div>
 
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
@@ -154,11 +167,16 @@ const ContactSection = () => {
 
               <Button 
                 type="submit" 
-                className="w-full bg-primary text-white font-medium py-6 hover:bg-primary/90 transition-all"
+                className="w-full bg-primary text-white font-medium py-6 hover:bg-primary/90 transition-all group"
               >
                 Odeslat zprávu
-                <Send className="ml-2 h-4 w-4" />
+                <Send className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
+
+              <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <Zap className="h-4 w-4 text-primary" />
+                <span>Odpovídáme prakticky okamžitě mezi 7:00 - 22:00</span>
+              </div>
             </form>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowUpRight, Clock, Check, Zap, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import PackageSelectionModal from './PackageSelectionModal';
 
 type PricingTier = {
   id: string;
@@ -98,6 +99,8 @@ const pricingTiers: PricingTier[] = [
 const PricingSection = () => {
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
   const [showExpressOption, setShowExpressOption] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<PricingTier | null>(null);
 
   const handleSelectTier = (tierId: string) => {
     setSelectedTier(tierId);
@@ -106,6 +109,11 @@ const PricingSection = () => {
 
   const toggleExpressOption = () => {
     setShowExpressOption(!showExpressOption);
+  };
+
+  const openPackageModal = (tier: PricingTier) => {
+    setSelectedPackage(tier);
+    setModalOpen(true);
   };
 
   return (
@@ -226,7 +234,7 @@ const PricingSection = () => {
                 <Button 
                   className="w-full" 
                   variant={tier.popular ? "default" : "outline"}
-                  onClick={() => handleSelectTier(tier.id)}
+                  onClick={() => openPackageModal(tier)}
                 >
                   Vybrat balíček
                 </Button>
@@ -247,6 +255,13 @@ const PricingSection = () => {
           </div>
         </div>
       </div>
+
+      <PackageSelectionModal 
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        selectedPackage={selectedPackage}
+        showExpressOption={showExpressOption}
+      />
     </section>
   );
 };

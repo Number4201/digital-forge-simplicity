@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 const navItems = [
   { name: 'Služby', path: '#services' },
   { name: 'O nás', path: '#about' },
-  { name: 'Reference', path: '#portfolio' },
+  // The References/Portfolio section is hidden but kept in the code for future use
+  // { name: 'Reference', path: '#portfolio' },
   { name: 'Kontakt', path: '#contact' },
 ];
 
@@ -33,6 +34,11 @@ const Navigation = () => {
   const scrollToContact = () => {
     setMobileMenuOpen(false);
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  };
+  
+  const scrollToPricing = () => {
+    setMobileMenuOpen(false);
+    document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -73,6 +79,12 @@ const Navigation = () => {
             </a>
           ))}
           <Button 
+            className="bg-secondary text-foreground/90 font-medium rounded-md px-5 py-2 hover:bg-secondary/80 transition-all"
+            onClick={scrollToPricing}
+          >
+            Balíčky
+          </Button>
+          <Button 
             className="bg-primary text-white font-medium rounded-md px-5 py-2 hover:bg-primary/90 transition-all"
             onClick={scrollToContact}
           >
@@ -111,6 +123,12 @@ const Navigation = () => {
               {item.name}
             </a>
           ))}
+          <Button 
+            className="bg-secondary text-foreground/90 font-medium rounded-md px-5 py-6 hover:bg-secondary/80 transition-all w-full"
+            onClick={scrollToPricing}
+          >
+            Balíčky
+          </Button>
           <Button 
             className="bg-primary text-white font-medium rounded-md px-5 py-6 hover:bg-primary/90 transition-all w-full"
             onClick={scrollToContact}

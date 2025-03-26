@@ -5,6 +5,7 @@ import HeroSection from '@/components/HeroSection';
 import ServicesSection from '@/components/ServicesSection';
 import AboutSection from '@/components/AboutSection';
 import PricingSection from '@/components/PricingSection';
+import PortfolioSection from '@/components/PortfolioSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import { Helmet } from 'react-helmet';
@@ -60,6 +61,8 @@ const Index = () => {
       <ServicesSection />
       <AboutSection />
       <PricingSection />
+      {/* Portfolio section is hidden but kept in the code for future use */}
+      {/* <PortfolioSection /> */}
       <ContactSection />
       <Footer />
     </div>
