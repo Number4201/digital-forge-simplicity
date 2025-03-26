@@ -53,8 +53,8 @@ const AboutSection = () => {
             </div>
           </div>
 
-          <div className="order-1 lg:order-2 relative">
-            <div className="relative overflow-hidden rounded-full aspect-square animate-circle-glow">
+          <div className="order-1 lg:order-2 relative flex justify-center items-center mt-12 lg:mt-32">
+            <div className="relative overflow-hidden rounded-full aspect-square animate-circle-glow w-3/4 max-w-[300px]">
               <LazyImage 
                 src="/lovable-uploads/9bf0c41e-9d09-48a2-bffa-10bf9b26e000.png" 
                 alt="Digitální cloud - propojená data a technologie"
