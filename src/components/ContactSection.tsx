@@ -1,19 +1,21 @@
 
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Send, Zap } from 'lucide-react';
+import { Phone, Mail, MapPin, Send, Zap, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from "@/integrations/supabase/client";
 
 const ContactSection = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !message) {
@@ -25,18 +27,38 @@ const ContactSection = () => {
       return;
     }
     
-    // Here you would normally send the data to your backend
-    console.log("Contact form submitted:", { name, email, subject, message });
+    setIsSubmitting(true);
     
-    toast({
-      title: "Zpráva odeslána",
-      description: "Děkujeme za váš zájem, brzy se vám ozveme.",
-    });
-    
-    setName('');
-    setEmail('');
-    setSubject('');
-    setMessage('');
+    try {
+      // Volání Supabase edge funkce pro zpracování kontaktního formuláře
+      const { error } = await supabase.functions.invoke('contact-form', {
+        body: { name, email, subject, message }
+      });
+      
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      toast({
+        title: "Zpráva odeslána",
+        description: "Děkujeme za váš zájem, brzy se vám ozveme.",
+      });
+      
+      // Reset formuláře
+      setName('');
+      setEmail('');
+      setSubject('');
+      setMessage('');
+    } catch (error: any) {
+      console.error('Chyba při odesílání formuláře:', error);
+      toast({
+        title: "Chyba",
+        description: error.message || "Něco se pokazilo. Zkuste to prosím později.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -78,7 +100,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="text-base font-medium">Telefon</h4>
-                    <p className="text-muted-foreground">+420 123 456 789</p>
+                    <p className="text-muted-foreground">+420 724 059 986</p>
                   </div>
                 </div>
 
@@ -88,7 +110,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="text-base font-medium">Email</h4>
-                    <p className="text-muted-foreground">info@digitalni-kovari.cz</p>
+                    <p className="text-muted-foreground">tvorba@digitalnikovari.cz</p>
                   </div>
                 </div>
 
@@ -98,7 +120,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="text-base font-medium">Adresa</h4>
-                    <p className="text-muted-foreground">Technologická 13, Praha 6, 160 00</p>
+                    <p className="text-muted-foreground">V.Vlčka 205, 273 51</p>
                   </div>
                 </div>
               </div>
@@ -168,9 +190,19 @@ const ContactSection = () => {
               <Button 
                 type="submit" 
                 className="w-full bg-primary text-white font-medium py-6 hover:bg-primary/90 transition-all group"
+                disabled={isSubmitting}
               >
-                Odeslat zprávu
-                <Send className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Odesílám...
+                  </>
+                ) : (
+                  <>
+                    Odeslat zprávu
+                    <Send className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
               </Button>
 
               <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
