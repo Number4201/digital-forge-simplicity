@@ -23,8 +23,28 @@ const Index = () => {
       observer.observe(el);
     });
 
+    // Handle hash navigation for direct links
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash) {
+        setTimeout(() => {
+          const element = document.getElementById(hash.substring(1));
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    };
+
+    // Check for hash on initial load
+    handleHashChange();
+    
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+
     return () => {
       observer.disconnect();
+      window.removeEventListener('hashchange', handleHashChange);
     };
   }, []);
 

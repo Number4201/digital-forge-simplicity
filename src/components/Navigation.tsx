@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -23,6 +24,17 @@ const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const scrollToElement = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+    document.getElementById(id.replace('#', ''))?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const scrollToContact = () => {
+    setMobileMenuOpen(false);
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <header
       className={cn(
@@ -35,7 +47,14 @@ const Navigation = () => {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
-        <a href="#" className="flex items-center space-x-2">
+        <a 
+          href="#" 
+          className="flex items-center space-x-2"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        >
           <span className="text-2xl font-display font-bold tracking-tight text-foreground animate-pulse-slow">
             Digitalní kováři
           </span>
@@ -48,11 +67,15 @@ const Navigation = () => {
               key={item.name}
               href={item.path}
               className="text-sm font-medium text-foreground/80 hover:text-foreground hover-effect"
+              onClick={(e) => scrollToElement(e, item.path)}
             >
               {item.name}
             </a>
           ))}
-          <Button className="bg-primary text-white font-medium rounded-md px-5 py-2 hover:bg-primary/90 transition-all">
+          <Button 
+            className="bg-primary text-white font-medium rounded-md px-5 py-2 hover:bg-primary/90 transition-all"
+            onClick={scrollToContact}
+          >
             Začít spolupráci
             <ChevronRight className="ml-1 h-4 w-4" />
           </Button>
@@ -82,13 +105,16 @@ const Navigation = () => {
             <a
               key={item.name}
               href={item.path}
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={(e) => scrollToElement(e, item.path)}
               className="text-lg font-medium text-foreground hover:text-foreground/80 hover-effect"
             >
               {item.name}
             </a>
           ))}
-          <Button className="bg-primary text-white font-medium rounded-md px-5 py-6 hover:bg-primary/90 transition-all w-full">
+          <Button 
+            className="bg-primary text-white font-medium rounded-md px-5 py-6 hover:bg-primary/90 transition-all w-full"
+            onClick={scrollToContact}
+          >
             Začít spolupráci
             <ChevronRight className="ml-1 h-5 w-5" />
           </Button>
