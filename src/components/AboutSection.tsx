@@ -56,8 +56,8 @@ const AboutSection = () => {
           <div className="order-1 lg:order-2 relative">
             <div className="relative overflow-hidden rounded-3xl aspect-square animate-image-glow">
               <LazyImage 
-                src="https://images.unsplash.com/photo-1642132652897-6ef7bed2a527?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80" 
-                alt="Digitální kovárna - tvorba moderních webových stránek"
+                src="/lovable-uploads/9bf0c41e-9d09-48a2-bffa-10bf9b26e000.png" 
+                alt="Digitální cloud - propojená data a technologie"
                 className="object-cover rounded-3xl"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
