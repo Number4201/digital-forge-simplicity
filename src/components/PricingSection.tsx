@@ -1,0 +1,215 @@
+
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowUpRight, Clock, Check, Zap } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+type PricingTier = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  discountPrice?: number;
+  deliveryTime: string;
+  features: string[];
+  popular?: boolean;
+  expressOption?: {
+    deliveryTime: string;
+    price: number;
+    discountPrice?: number;
+  };
+};
+
+const pricingTiers: PricingTier[] = [
+  {
+    id: 'basic',
+    name: 'Informační web',
+    description: 'Jednoduchá šablona pro základní prezentaci vašeho podnikání',
+    price: 3000,
+    discountPrice: 1800,
+    deliveryTime: '3 dny',
+    features: [
+      'Responzivní design',
+      'SEO optimalizace',
+      'Tvorba obsahu v ceně',
+      'Kontaktní formulář',
+      'Napojení na Google Analytics',
+    ],
+  },
+  {
+    id: 'custom',
+    name: 'Prémiový web',
+    description: 'Web na míru s pokročilými funkcemi podle vašich požadavků',
+    price: 5000,
+    deliveryTime: '7 dní',
+    popular: true,
+    features: [
+      'Vše z Informačního webu',
+      'Vlastní grafický design',
+      'Interaktivní prvky',
+      'Optimalizace pro vysokou konverzi',
+      'Napojení na sociální sítě',
+      'Administrační systém',
+    ],
+    expressOption: {
+      deliveryTime: '48 hodin',
+      price: 10000,
+      discountPrice: 6500,
+    },
+  },
+  {
+    id: 'ecommerce',
+    name: 'Byznys řešení',
+    description: 'Komplexní web s e-shopem a vlastní databází',
+    price: 27000,
+    deliveryTime: '30 dní',
+    features: [
+      'Vše z Prémiového webu',
+      'E-shop s napojením na platební brány',
+      'Vlastní databáze produktů',
+      'Napojení na skladový systém',
+      'AI chatbot pro zákaznickou podporu',
+      'Pokročilá analytika',
+      'API integrace na míru',
+    ],
+  },
+];
+
+const PricingSection = () => {
+  const [selectedTier, setSelectedTier] = useState<string | null>(null);
+  const [showExpressOption, setShowExpressOption] = useState(false);
+
+  const handleSelectTier = (tierId: string) => {
+    setSelectedTier(tierId);
+    setShowExpressOption(false);
+  };
+
+  const toggleExpressOption = () => {
+    setShowExpressOption(!showExpressOption);
+  };
+
+  return (
+    <section id="pricing" className="section-padding bg-secondary/40">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16 animate-fade-in">
+          <h2 className="section-title">Naše řešení</h2>
+          <p className="section-subtitle max-w-3xl mx-auto">
+            Vyberte si z našich balíčků podle vašich potřeb a rozpočtu
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          {pricingTiers.map((tier) => (
+            <Card 
+              key={tier.id}
+              className={cn(
+                "relative border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300 h-full",
+                tier.popular ? "border-primary/40 shadow-[0_0_15px_rgba(155,135,245,0.1)]" : "",
+                selectedTier === tier.id ? "ring-2 ring-primary" : ""
+              )}
+            >
+              {tier.popular && (
+                <div className="absolute -top-4 left-0 right-0 flex justify-center">
+                  <span className="bg-primary px-4 py-1 rounded-full text-xs font-medium text-primary-foreground">
+                    Nejoblíbenější
+                  </span>
+                </div>
+              )}
+              <CardHeader>
+                <CardTitle className="text-2xl font-display mb-2">{tier.name}</CardTitle>
+                <CardDescription className="text-muted-foreground min-h-[60px]">
+                  {tier.description}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <div className="flex items-baseline gap-2">
+                    {tier.discountPrice ? (
+                      <>
+                        <span className="text-3xl font-bold font-display">{tier.discountPrice.toLocaleString()} Kč</span>
+                        <span className="text-xl text-muted-foreground line-through">{tier.price.toLocaleString()} Kč</span>
+                      </>
+                    ) : (
+                      <span className="text-3xl font-bold font-display">{tier.price.toLocaleString()} Kč</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Clock className="h-4 w-4" />
+                  <span>Dodání: <strong className="text-foreground">{tier.deliveryTime}</strong></span>
+                </div>
+
+                {tier.expressOption && (
+                  <div className="mt-4">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full flex justify-between items-center border-dashed"
+                      onClick={toggleExpressOption}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Zap className="h-4 w-4 text-yellow-500" />
+                        <span>Express dodání</span>
+                      </div>
+                      <ArrowUpRight className="h-4 w-4" />
+                    </Button>
+                    
+                    {showExpressOption && selectedTier === tier.id && (
+                      <div className="mt-3 p-3 bg-secondary/60 rounded-md text-sm">
+                        <div className="font-medium mb-1">Express do {tier.expressOption.deliveryTime}</div>
+                        <div className="flex items-baseline gap-2 mb-2">
+                          {tier.expressOption.discountPrice ? (
+                            <>
+                              <span className="font-bold">+{tier.expressOption.discountPrice.toLocaleString()} Kč</span>
+                              <span className="text-muted-foreground line-through text-xs">+{tier.expressOption.price.toLocaleString()} Kč</span>
+                            </>
+                          ) : (
+                            <span className="font-bold">+{tier.expressOption.price.toLocaleString()} Kč</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <ul className="space-y-2.5">
+                  {tier.features.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button 
+                  className="w-full" 
+                  variant={tier.popular ? "default" : "outline"}
+                  onClick={() => handleSelectTier(tier.id)}
+                >
+                  Vybrat balíček
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+
+        <div className="bg-secondary/60 rounded-xl p-6 border border-border/40 backdrop-blur-sm animate-fade-in">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div>
+              <h3 className="text-xl font-display font-bold mb-2">Správa webu</h3>
+              <p className="text-muted-foreground">Průběžná aktualizace obsahu, monitoring a technická podpora</p>
+            </div>
+            <div className="mt-4 md:mt-0">
+              <div className="text-2xl font-bold font-display">od 700 Kč <span className="text-sm font-normal text-muted-foreground">/ měsíc</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default PricingSection;
