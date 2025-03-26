@@ -1,7 +1,7 @@
 
 import React from 'react';
 import LazyImage from './LazyImage';
-import { Check } from 'lucide-react';
+import { Check, Sparkles } from 'lucide-react';
 
 const aboutPoints = [
   'Webové stránky s důrazem na konverze a funkčnost',
@@ -28,19 +28,28 @@ const AboutSection = () => {
 
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
               {aboutPoints.map((point, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <div className="mt-1 flex-shrink-0">
-                    <Check className="h-5 w-5 text-accent" />
+                <div 
+                  key={index} 
+                  className="feature-point bg-secondary/20 border border-secondary/30 rounded-lg p-3 hover:shadow-lg"
+                >
+                  <div className="flex items-start">
+                    <div className="mt-1 flex-shrink-0 bg-accent/10 rounded-full p-1.5">
+                      <Check className="feature-point-icon text-accent" />
+                    </div>
+                    <div className="ml-3">
+                      <span className="text-foreground/90 font-medium">{point}</span>
+                    </div>
                   </div>
-                  <span className="text-foreground/90">{point}</span>
+                  <div className="absolute -z-10 top-0 left-0 w-full h-full bg-gradient-to-br from-accent/5 to-transparent opacity-0 transition-opacity duration-300 rounded-lg"></div>
                 </div>
               ))}
             </div>
 
             <div className="mt-12 text-lg">
-              <p className="italic text-muted-foreground border-l-4 border-accent/50 pl-4">
-                "Digitální řemeslo s důrazem na výsledky."
-              </p>
+              <div className="italic text-muted-foreground border-l-4 border-accent/50 pl-4 py-2 flex items-center bg-secondary/20 rounded-r-lg">
+                <Sparkles className="h-5 w-5 text-accent mr-2" />
+                <p>"Digitální řemeslo s důrazem na výsledky."</p>
+              </div>
             </div>
           </div>
 

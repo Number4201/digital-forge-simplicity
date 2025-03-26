@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -51,6 +50,14 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  html {
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   .glass-panel {
@@ -107,6 +114,19 @@
 
   .animate-spin-slow {
     animation: spinSlow 30s linear infinite;
+  }
+  
+  /* Feature point styling */
+  .feature-point {
+    @apply flex items-start space-x-3 p-2 rounded-lg transition-all duration-300 hover:bg-secondary/30;
+  }
+  
+  .feature-point-icon {
+    @apply h-5 w-5 text-accent flex-shrink-0 mt-0.5 transition-transform duration-300;
+  }
+  
+  .feature-point:hover .feature-point-icon {
+    @apply text-primary transform scale-110;
   }
 }
 

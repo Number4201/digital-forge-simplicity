@@ -31,7 +31,7 @@ type PricingTier = {
 const pricingTiers: PricingTier[] = [
   {
     id: 'basic',
-    name: 'Informační web',
+    name: 'Prezentační web',
     description: 'Jednoduchá šablona pro základní prezentaci vašeho podnikání',
     price: 3000,
     discountPrice: 1800,
@@ -53,10 +53,10 @@ const pricingTiers: PricingTier[] = [
     name: 'Prémiový web',
     description: 'Web na míru s pokročilými funkcemi podle vašich požadavků',
     price: 5000,
-    deliveryTime: '7 dní',
+    deliveryTime: '14 dní',
     popular: true,
     features: [
-      'Vše z Informačního webu',
+      'Vše z Prezentačního webu',
       'Vlastní grafický design',
       'Interaktivní prvky',
       'SEO optimalizace',
