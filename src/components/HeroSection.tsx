@@ -29,7 +29,7 @@ const HeroSection = () => {
               Konzultace zdarma
             </Button>
             <Button variant="outline" className="bg-transparent border-white/20 text-white font-medium rounded-md px-8 py-6 text-lg hover:bg-white/5 transition-all min-w-[200px]">
-              Naše projekty
+              Balíčky
             </Button>
           </div>
         </div>

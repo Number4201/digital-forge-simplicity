@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -92,22 +91,27 @@ const PricingSection = () => {
   return (
     <section id="pricing" className="section-padding bg-secondary/40">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16 animate-fade-in">
-          <h2 className="section-title">Naše řešení</h2>
+        <div className="text-center mb-16">
+          <div className="relative inline-block">
+            <h2 className="section-title mb-0 relative z-10">Naše řešení</h2>
+            <div className="absolute inset-x-0 bottom-0 h-3 bg-accent/10 -rotate-1"></div>
+          </div>
           <p className="section-subtitle max-w-3xl mx-auto">
             Vyberte si z našich balíčků podle vašich potřeb a rozpočtu
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          {pricingTiers.map((tier) => (
+          {pricingTiers.map((tier, index) => (
             <Card 
               key={tier.id}
               className={cn(
-                "relative border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300 h-full",
+                "relative border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300 h-full transform hover:-translate-y-1 hover:shadow-lg",
+                "animate-fade-in [animation-delay:var(--delay)]",
                 tier.popular ? "border-primary/40 shadow-[0_0_15px_rgba(155,135,245,0.1)]" : "",
                 selectedTier === tier.id ? "ring-2 ring-primary" : ""
               )}
+              style={{ '--delay': `${index * 150}ms` } as React.CSSProperties}
             >
               {tier.popular && (
                 <div className="absolute -top-4 left-0 right-0 flex justify-center">
@@ -196,7 +200,7 @@ const PricingSection = () => {
           ))}
         </div>
 
-        <div className="bg-secondary/60 rounded-xl p-6 border border-border/40 backdrop-blur-sm animate-fade-in">
+        <div className="bg-secondary/60 rounded-xl p-6 border border-border/40 backdrop-blur-sm animate-fade-in hover:shadow-lg transition-all duration-300">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div>
               <h3 className="text-xl font-display font-bold mb-2">Správa webu</h3>
