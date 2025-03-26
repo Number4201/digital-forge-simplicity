@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const ContactForm = () => {
   const [name, setName] = useState('');
@@ -14,6 +15,7 @@ const ContactForm = () => {
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,12 +32,18 @@ const ContactForm = () => {
     setIsSubmitting(true);
     
     try {
+      // Logging the request for debugging
+      console.log("Submitting form with data:", { name, email, subject, message });
+      
       // Volání Supabase edge funkce pro zpracování kontaktního formuláře
-      const { error } = await supabase.functions.invoke('contact-form', {
+      const { error, data } = await supabase.functions.invoke('contact-form', {
         body: { name, email, subject, message }
       });
       
+      console.log("Response from edge function:", data);
+      
       if (error) {
+        console.error("Edge function error:", error);
         throw new Error(error.message);
       }
       
@@ -61,8 +69,12 @@ const ContactForm = () => {
     }
   };
 
+  // Optimize rendering for mobile devices
+  const inputClasses = "bg-secondary/40 border-white/10 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary";
+  const formClasses = isMobile ? "glass-panel p-6 rounded-xl" : "glass-panel p-8 rounded-2xl";
+
   return (
-    <form className="glass-panel p-8 rounded-2xl" onSubmit={handleSubmit}>
+    <form className={formClasses} onSubmit={handleSubmit}>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
         <div>
           <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -71,7 +83,7 @@ const ContactForm = () => {
           <Input
             id="name"
             placeholder="Vaše jméno"
-            className="bg-secondary/40 border-white/10 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+            className={inputClasses}
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -85,7 +97,7 @@ const ContactForm = () => {
             id="email"
             type="email"
             placeholder="vas@email.cz"
-            className="bg-secondary/40 border-white/10 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+            className={inputClasses}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -100,21 +112,21 @@ const ContactForm = () => {
         <Input
           id="subject"
           placeholder="S čím vám můžeme pomoci?"
-          className="bg-secondary/40 border-white/10 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+          className={inputClasses}
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
         />
       </div>
 
-      <div className="mb-8">
+      <div className="mb-6">
         <label htmlFor="message" className="block text-sm font-medium mb-2">
           Zpráva
         </label>
         <Textarea
           id="message"
           placeholder="Popište nám váš projekt..."
-          rows={6}
-          className="bg-secondary/40 border-white/10 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary resize-none"
+          rows={isMobile ? 4 : 6}
+          className={`${inputClasses} resize-none`}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           required
@@ -123,7 +135,7 @@ const ContactForm = () => {
 
       <Button 
         type="submit" 
-        className="w-full bg-primary text-white font-medium py-6 hover:bg-primary/90 transition-all group"
+        className="w-full bg-primary text-white font-medium py-5 hover:bg-primary/90 transition-all group"
         disabled={isSubmitting}
       >
         {isSubmitting ? (

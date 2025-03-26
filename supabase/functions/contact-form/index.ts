@@ -6,11 +6,11 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.3";
 // Define the Resend API key directly
 const RESEND_API_KEY = "re_JPvTaZko_5aE7M6YhsY7h4pxQhEFKRDXt";
 
-console.log("Initializing with Resend API key presence:", !!RESEND_API_KEY);
+console.log("Initializing with Resend API key:", RESEND_API_KEY.substring(0, 5) + "...");
 
 const resend = new Resend(RESEND_API_KEY);
 const NOTIFICATION_EMAIL = "theheydee@gmail.com";
-const FROM_EMAIL = "tvorba@digitalnikovari.cz";
+const FROM_EMAIL = "onboarding@resend.dev"; // Using Resend's default domain until yours is verified
 
 // Nastavení CORS hlaviček
 const corsHeaders = {
@@ -79,10 +79,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Odeslání e-mailu
     try {
-      console.log("Attempting to send email with Resend API");
-      console.log("API Key present:", !!RESEND_API_KEY);
-      console.log("Sending to:", NOTIFICATION_EMAIL);
-      console.log("Sending from:", `Digitální kováři <${FROM_EMAIL}>`);
+      console.log("Sending email with Resend");
+      console.log("To:", NOTIFICATION_EMAIL);
+      console.log("From:", FROM_EMAIL);
       
       const emailResponse = await resend.emails.send({
         from: `Digitální kováři <${FROM_EMAIL}>`,
@@ -98,7 +97,7 @@ const handler = async (req: Request): Promise<Response> => {
         `,
       });
 
-      console.log("E-mail odeslán:", emailResponse);
+      console.log("E-mail response:", JSON.stringify(emailResponse));
 
       return new Response(
         JSON.stringify({
@@ -113,6 +112,7 @@ const handler = async (req: Request): Promise<Response> => {
     } catch (emailError: any) {
       console.error("Chyba při odesílání e-mailu:", emailError);
       console.error("Error details:", JSON.stringify(emailError));
+      
       return new Response(
         JSON.stringify({
           error: `Chyba při odesílání e-mailu: ${emailError.message}`,
