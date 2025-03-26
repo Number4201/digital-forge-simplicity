@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -116,6 +117,11 @@
     animation: spinSlow 30s linear infinite;
   }
   
+  /* Circle transform animation */
+  .animate-circle-glow {
+    animation: circleGlow 8s ease-in-out infinite;
+  }
+  
   /* Feature point styling */
   .feature-point {
     @apply flex items-start space-x-3 p-2 rounded-lg transition-all duration-300 hover:bg-secondary/30;
@@ -167,6 +173,22 @@
   }
 }
 
+/* New circle transform animation with more natural feel */
+@keyframes circleGlow {
+  0% {
+    box-shadow: 0 0 15px 5px rgba(82, 138, 255, 0.3);
+    transform: scale(0.97);
+  }
+  50% {
+    box-shadow: 0 0 25px 10px rgba(82, 138, 255, 0.5);
+    transform: scale(1.02);
+  }
+  100% {
+    box-shadow: 0 0 15px 5px rgba(82, 138, 255, 0.3);
+    transform: scale(0.97);
+  }
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
@@ -181,3 +203,4 @@ html {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+

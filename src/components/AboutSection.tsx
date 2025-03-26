@@ -54,13 +54,13 @@ const AboutSection = () => {
           </div>
 
           <div className="order-1 lg:order-2 relative">
-            <div className="relative overflow-hidden rounded-3xl aspect-square animate-image-glow">
+            <div className="relative overflow-hidden rounded-full aspect-square animate-circle-glow">
               <LazyImage 
                 src="/lovable-uploads/9bf0c41e-9d09-48a2-bffa-10bf9b26e000.png" 
                 alt="Digitální cloud - propojená data a technologie"
-                className="object-cover rounded-3xl"
+                className="object-cover rounded-full"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-background/30 to-transparent rounded-full"></div>
             </div>
             <div className="absolute -bottom-8 -right-8 w-64 h-64 rounded-full bg-primary/5 filter blur-3xl"></div>
           </div>
