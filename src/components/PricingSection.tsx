@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowUpRight, Clock, Check, Zap } from 'lucide-react';
+import { ArrowUpRight, Clock, Check, Zap, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type PricingTier = {
@@ -18,6 +19,11 @@ type PricingTier = {
     price: number;
     discountPrice?: number;
   };
+  securityCertificate?: {
+    name: string;
+    description?: string;
+    discount?: boolean;
+  };
 };
 
 const pricingTiers: PricingTier[] = [
@@ -30,11 +36,15 @@ const pricingTiers: PricingTier[] = [
     deliveryTime: '3 dny',
     features: [
       'Responzivní design',
-      'SEO optimalizace',
+      'Základní SEO optimalizace',
       'Tvorba obsahu v ceně',
       'Kontaktní formulář',
       'Napojení na Google Analytics',
     ],
+    securityCertificate: {
+      name: 'SSL certifikát',
+      description: 'Základní šifrování komunikace',
+    }
   },
   {
     id: 'custom',
@@ -47,6 +57,7 @@ const pricingTiers: PricingTier[] = [
       'Vše z Informačního webu',
       'Vlastní grafický design',
       'Interaktivní prvky',
+      'SEO optimalizace',
       'Optimalizace pro vysokou konverzi',
       'Napojení na sociální sítě',
       'Administrační systém',
@@ -56,6 +67,10 @@ const pricingTiers: PricingTier[] = [
       price: 10000,
       discountPrice: 6500,
     },
+    securityCertificate: {
+      name: 'SSL certifikát',
+      description: 'Rozšířená validace domény',
+    }
   },
   {
     id: 'ecommerce',
@@ -72,6 +87,11 @@ const pricingTiers: PricingTier[] = [
       'Pokročilá analytika',
       'API integrace na míru',
     ],
+    securityCertificate: {
+      name: 'DigiCert EV SSL certifikát',
+      description: 'Nejvyšší úroveň zabezpečení a ověření',
+      discount: true,
+    }
   },
 ];
 
@@ -144,6 +164,21 @@ const PricingSection = () => {
                   <Clock className="h-4 w-4" />
                   <span>Dodání: <strong className="text-foreground">{tier.deliveryTime}</strong></span>
                 </div>
+
+                {tier.securityCertificate && (
+                  <div className="flex items-center gap-2 text-sm border border-border/50 rounded-md p-2 bg-secondary/50">
+                    <Shield className="h-4 w-4 text-green-500" />
+                    <div>
+                      <span className="font-medium text-foreground">{tier.securityCertificate.name}</span>
+                      {tier.securityCertificate.description && (
+                        <p className="text-xs text-muted-foreground">{tier.securityCertificate.description}</p>
+                      )}
+                      {tier.securityCertificate.discount && (
+                        <p className="text-xs text-emerald-500 font-medium">Se slevou 30%</p>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {tier.expressOption && (
                   <div className="mt-4">

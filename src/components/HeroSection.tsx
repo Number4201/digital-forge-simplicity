@@ -25,7 +25,10 @@ const HeroSection = () => {
   };
 
   const scrollToPricing = () => {
-    document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+    const pricingSection = document.getElementById('pricing');
+    if (pricingSection) {
+      pricingSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
