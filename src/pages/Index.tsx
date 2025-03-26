@@ -7,7 +7,7 @@ import AboutSection from '@/components/AboutSection';
 import PricingSection from '@/components/PricingSection';
 // Portfolio section is hidden but kept in the code for future use
 // import PortfolioSection from '@/components/PortfolioSection';
-import ContactSection from '@/components/ContactSection';
+import ContactSection from '@/components/contact/ContactSection';
 import Footer from '@/components/Footer';
 import { Helmet } from 'react-helmet';
 
