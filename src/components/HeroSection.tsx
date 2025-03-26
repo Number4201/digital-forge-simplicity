@@ -1,16 +1,57 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle,
+  DialogDescription 
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 const HeroSection = () => {
+  const [consultationOpen, setConsultationOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [note, setNote] = useState('');
+  const { toast } = useToast();
+
   const scrollToContact = () => {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const scrollToPricing = () => {
     document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email && !phone) {
+      toast({
+        title: "Chyba",
+        description: "Zadejte prosím email nebo telefon",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Here you would normally send the data to your backend
+    console.log("Form submitted:", { email, phone, note });
+    
+    toast({
+      title: "Úspěšně odesláno",
+      description: "Brzy vás budeme kontaktovat",
+    });
+    
+    setConsultationOpen(false);
+    setEmail('');
+    setPhone('');
+    setNote('');
   };
 
   return (
@@ -36,7 +77,7 @@ const HeroSection = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
             <Button 
               className="bg-primary/90 hover:bg-primary text-white font-medium rounded-md px-8 py-6 text-lg transition-all min-w-[200px]"
-              onClick={scrollToContact}
+              onClick={() => setConsultationOpen(true)}
             >
               Konzultace zdarma
             </Button>
@@ -64,6 +105,74 @@ const HeroSection = () => {
           <ArrowDown className="h-5 w-5" />
         </a>
       </div>
+
+      <Dialog open={consultationOpen} onOpenChange={setConsultationOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">Konzultace zdarma</DialogTitle>
+            <DialogDescription>
+              Nechte nám kontakt a my se vám ozveme pro nezávaznou konzultaci vašeho projektu.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium mb-1">
+                Email
+              </label>
+              <Input 
+                id="email" 
+                type="email" 
+                placeholder="vas@email.cz" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full"
+              />
+              <p className="text-xs text-muted-foreground mt-1">Stačí vyplnit email nebo telefon</p>
+            </div>
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium mb-1">
+                Telefon
+              </label>
+              <Input 
+                id="phone" 
+                type="tel" 
+                placeholder="+420 123 456 789" 
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full"
+              />
+            </div>
+            <div>
+              <label htmlFor="note" className="block text-sm font-medium mb-1">
+                Poznámka
+              </label>
+              <Textarea 
+                id="note" 
+                placeholder="Např. psát na whatsapp a pod."
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                onFocus={(e) => {
+                  if (e.target.value === "Např. psát na whatsapp a pod.") {
+                    setNote("");
+                  }
+                }}
+                onBlur={(e) => {
+                  if (e.target.value === "") {
+                    setNote("Např. psát na whatsapp a pod.");
+                  }
+                }}
+                className="w-full"
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button type="button" variant="outline" onClick={() => setConsultationOpen(false)}>
+                Zrušit
+              </Button>
+              <Button type="submit">Odeslat</Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

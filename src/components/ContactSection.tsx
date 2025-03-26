@@ -1,11 +1,44 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 const ContactSection = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+  const { toast } = useToast();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email || !message) {
+      toast({
+        title: "Chyba",
+        description: "Vyplňte prosím email a zprávu",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Here you would normally send the data to your backend
+    console.log("Contact form submitted:", { name, email, subject, message });
+    
+    toast({
+      title: "Zpráva odeslána",
+      description: "Děkujeme za váš zájem, brzy se vám ozveme.",
+    });
+    
+    setName('');
+    setEmail('');
+    setSubject('');
+    setMessage('');
+  };
+
   return (
     <section id="contact" className="section-padding bg-background">
       <div className="max-w-7xl mx-auto">
@@ -60,7 +93,7 @@ const ContactSection = () => {
           </div>
 
           <div className="animate-fade-in">
-            <form className="glass-panel p-8 rounded-2xl">
+            <form className="glass-panel p-8 rounded-2xl" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -70,6 +103,8 @@ const ContactSection = () => {
                     id="name"
                     placeholder="Vaše jméno"
                     className="bg-secondary/40 border-white/10 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                   />
                 </div>
 
@@ -82,6 +117,9 @@ const ContactSection = () => {
                     type="email"
                     placeholder="vas@email.cz"
                     className="bg-secondary/40 border-white/10 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -94,6 +132,8 @@ const ContactSection = () => {
                   id="subject"
                   placeholder="S čím vám můžeme pomoci?"
                   className="bg-secondary/40 border-white/10 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
                 />
               </div>
 
@@ -106,10 +146,16 @@ const ContactSection = () => {
                   placeholder="Popište nám váš projekt..."
                   rows={6}
                   className="bg-secondary/40 border-white/10 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary resize-none"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
                 />
               </div>
 
-              <Button className="w-full bg-primary text-white font-medium py-6 hover:bg-primary/90 transition-all">
+              <Button 
+                type="submit" 
+                className="w-full bg-primary text-white font-medium py-6 hover:bg-primary/90 transition-all"
+              >
                 Odeslat zprávu
                 <Send className="ml-2 h-4 w-4" />
               </Button>
