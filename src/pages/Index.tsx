@@ -5,7 +5,8 @@ import HeroSection from '@/components/HeroSection';
 import ServicesSection from '@/components/ServicesSection';
 import AboutSection from '@/components/AboutSection';
 import PricingSection from '@/components/PricingSection';
-import PortfolioSection from '@/components/PortfolioSection';
+// Portfolio section is hidden but kept in the code for future use
+// import PortfolioSection from '@/components/PortfolioSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import { Helmet } from 'react-helmet';
@@ -55,6 +56,7 @@ const Index = () => {
       <Helmet>
         <title>Tvorba webových stránek rychle a levně | Digitální kováři</title>
         <meta name="description" content="Vytváříme profesionální webové stránky rychle a za dostupné ceny. Kompletní řešení od informačních webů až po komplexní byznys řešení." />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
       </Helmet>
       <Navigation />
       <HeroSection />

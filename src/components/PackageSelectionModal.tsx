@@ -3,7 +3,7 @@ import React from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { X, Clock, Check } from 'lucide-react';
+import { X, Clock, Check, Zap } from 'lucide-react';
 import { 
   Dialog, 
   DialogContent, 
@@ -25,6 +25,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // Validation schema for the form
 const formSchema = z.object({
@@ -84,6 +85,7 @@ const PackageSelectionModal = ({
   showExpressOption 
 }: PackageSelectionModalProps) => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -113,9 +115,9 @@ const PackageSelectionModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto p-4 md:p-6 w-[calc(100vw-32px)] md:w-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-display">
+          <DialogTitle className="text-xl md:text-2xl font-display">
             Balíček: {selectedPackage.name}
           </DialogTitle>
           <DialogDescription>
@@ -145,12 +147,27 @@ const PackageSelectionModal = ({
             </strong></span>
           </div>
 
+          {showExpressOption && selectedPackage.expressOption && (
+            <div className="mb-4 p-3 bg-primary/10 rounded-md border border-primary/20">
+              <div className="flex items-center gap-2 text-sm mb-1">
+                <Zap className="h-4 w-4 text-yellow-500" />
+                <span className="font-medium">Express dodání aktivováno</span>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Dokončíme váš web do {selectedPackage.expressOption.deliveryTime} za příplatek 
+                {selectedPackage.expressOption.discountPrice 
+                  ? ` ${selectedPackage.expressOption.discountPrice.toLocaleString()} Kč`
+                  : ` ${selectedPackage.expressOption.price.toLocaleString()} Kč`}
+              </div>
+            </div>
+          )}
+
           <div className="space-y-1.5">
             <h4 className="text-sm font-medium mb-1">Obsah balíčku:</h4>
             <ul className="space-y-1.5">
               {selectedPackage.features.map((feature, index) => (
-                <li key={index} className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                <li key={index} className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                   <span>{feature}</span>
                 </li>
               ))}
@@ -259,7 +276,7 @@ const PackageSelectionModal = ({
               />
             </div>
 
-            <DialogFooter>
+            <DialogFooter className="mt-6 sm:mt-8">
               <Button type="submit" className="w-full">
                 Odeslat objednávku
               </Button>

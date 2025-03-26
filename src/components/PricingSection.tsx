@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ArrowUpRight, Clock, Check, Zap, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import PackageSelectionModal from './PackageSelectionModal';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type PricingTier = {
   id: string;
@@ -97,18 +98,17 @@ const pricingTiers: PricingTier[] = [
 ];
 
 const PricingSection = () => {
-  const [selectedTier, setSelectedTier] = useState<string | null>(null);
-  const [showExpressOption, setShowExpressOption] = useState(false);
+  const [expressOptionId, setExpressOptionId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<PricingTier | null>(null);
+  const isMobile = useIsMobile();
 
-  const handleSelectTier = (tierId: string) => {
-    setSelectedTier(tierId);
-    setShowExpressOption(false);
-  };
-
-  const toggleExpressOption = () => {
-    setShowExpressOption(!showExpressOption);
+  const toggleExpressOption = (tierId: string) => {
+    if (expressOptionId === tierId) {
+      setExpressOptionId(null);
+    } else {
+      setExpressOptionId(tierId);
+    }
   };
 
   const openPackageModal = (tier: PricingTier) => {
@@ -136,8 +136,7 @@ const PricingSection = () => {
               className={cn(
                 "relative border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300 h-full transform hover:-translate-y-1 hover:shadow-lg",
                 "animate-fade-in [animation-delay:var(--delay)]",
-                tier.popular ? "border-primary/40 shadow-[0_0_15px_rgba(155,135,245,0.1)]" : "",
-                selectedTier === tier.id ? "ring-2 ring-primary" : ""
+                tier.popular ? "border-primary/40 shadow-[0_0_15px_rgba(155,135,245,0.1)]" : ""
               )}
               style={{ '--delay': `${index * 150}ms` } as React.CSSProperties}
             >
@@ -149,7 +148,7 @@ const PricingSection = () => {
                 </div>
               )}
               <CardHeader>
-                <CardTitle className="text-2xl font-display mb-2">{tier.name}</CardTitle>
+                <CardTitle className="text-xl md:text-2xl font-display mb-2">{tier.name}</CardTitle>
                 <CardDescription className="text-muted-foreground min-h-[60px]">
                   {tier.description}
                 </CardDescription>
@@ -159,11 +158,11 @@ const PricingSection = () => {
                   <div className="flex items-baseline gap-2">
                     {tier.discountPrice ? (
                       <>
-                        <span className="text-3xl font-bold font-display">{tier.discountPrice.toLocaleString()} Kč</span>
-                        <span className="text-xl text-muted-foreground line-through">{tier.price.toLocaleString()} Kč</span>
+                        <span className="text-2xl md:text-3xl font-bold font-display">{tier.discountPrice.toLocaleString()} Kč</span>
+                        <span className="text-lg md:text-xl text-muted-foreground line-through">{tier.price.toLocaleString()} Kč</span>
                       </>
                     ) : (
-                      <span className="text-3xl font-bold font-display">{tier.price.toLocaleString()} Kč</span>
+                      <span className="text-2xl md:text-3xl font-bold font-display">{tier.price.toLocaleString()} Kč</span>
                     )}
                   </div>
                 </div>
@@ -194,16 +193,16 @@ const PricingSection = () => {
                       variant="outline" 
                       size="sm" 
                       className="w-full flex justify-between items-center border-dashed"
-                      onClick={toggleExpressOption}
+                      onClick={() => toggleExpressOption(tier.id)}
                     >
                       <div className="flex items-center gap-2">
                         <Zap className="h-4 w-4 text-yellow-500" />
                         <span>Express dodání</span>
                       </div>
-                      <ArrowUpRight className="h-4 w-4" />
+                      <ArrowUpRight className={cn("h-4 w-4 transition-transform", expressOptionId === tier.id ? "rotate-90" : "")} />
                     </Button>
                     
-                    {showExpressOption && selectedTier === tier.id && (
+                    {expressOptionId === tier.id && tier.expressOption && (
                       <div className="mt-3 p-3 bg-secondary/60 rounded-md text-sm">
                         <div className="font-medium mb-1">Express do {tier.expressOption.deliveryTime}</div>
                         <div className="flex items-baseline gap-2 mb-2">
@@ -223,8 +222,8 @@ const PricingSection = () => {
 
                 <ul className="space-y-2.5">
                   {tier.features.map((feature, index) => (
-                    <li key={index} className="flex items-center gap-2 text-sm">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                    <li key={index} className="flex items-start gap-2 text-sm">
+                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                       <span>{feature}</span>
                     </li>
                   ))}
@@ -243,7 +242,7 @@ const PricingSection = () => {
           ))}
         </div>
 
-        <div className="bg-secondary/60 rounded-xl p-6 border border-border/40 backdrop-blur-sm animate-fade-in hover:shadow-lg transition-all duration-300">
+        <div className="bg-secondary/60 rounded-xl p-4 md:p-6 border border-border/40 backdrop-blur-sm animate-fade-in hover:shadow-lg transition-all duration-300">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div>
               <h3 className="text-xl font-display font-bold mb-2">Správa webu</h3>
@@ -260,7 +259,7 @@ const PricingSection = () => {
         open={modalOpen}
         onOpenChange={setModalOpen}
         selectedPackage={selectedPackage}
-        showExpressOption={showExpressOption}
+        showExpressOption={selectedPackage && expressOptionId === selectedPackage.id}
       />
     </section>
   );

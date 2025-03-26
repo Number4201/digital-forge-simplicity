@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const navItems = [
   { name: 'Služby', path: '#services' },
@@ -15,6 +16,7 @@ const navItems = [
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,7 +46,7 @@ const Navigation = () => {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out py-4 px-6 md:py-5 md:px-12 lg:px-24',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out py-4 px-4 md:py-5 md:px-12 lg:px-24',
         {
           'bg-background/80 backdrop-blur-lg shadow-md': isScrolled,
           'bg-transparent': !isScrolled
@@ -61,7 +63,7 @@ const Navigation = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         >
-          <span className="text-2xl font-display font-bold tracking-tight text-foreground animate-pulse-slow">
+          <span className="text-xl md:text-2xl font-display font-bold tracking-tight text-foreground animate-pulse-slow">
             Digitalní kováři
           </span>
         </a>
