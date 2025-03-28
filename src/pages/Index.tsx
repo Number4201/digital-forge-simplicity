@@ -95,10 +95,63 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
         <title>Tvorba webových stránek rychle a levně | Digitální kováři</title>
-        <meta name="description" content="Vytváříme profesionální webové stránky rychle a za dostupné ceny. Kompletní řešení od informačních webů až po komplexní byznys řešení." />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+        <meta name="description" content="Vytváříme profesionální webové stránky rychle a za dostupné ceny. S AI chatboty, rezervačním systémem a propojením s Google kalendářem." />
+        <meta name="keywords" content="tvorba webových stránek, webdesign, profesionální web, AI chatbot, rezervační systém, levné weby" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
         <link rel="preconnect" href="https://fonts.cdnfonts.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="canonical" href="https://digitalnikovari.cz" />
+        
+        {/* Structured data for LocalBusiness */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "name": "Digitální kováři",
+            "description": "Profesionální tvorba webových stránek s AI chatboty, rezervačním systémem a Google kalendářem.",
+            "url": "https://digitalnikovari.cz",
+            "telephone": "+420123456789",
+            "email": "info@digitalnikovari.cz",
+            "priceRange": "6000-33000 Kč",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Praha",
+              "addressRegion": "Praha",
+              "addressCountry": "CZ"
+            },
+            "openingHoursSpecification": {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday"
+              ],
+              "opens": "09:00",
+              "closes": "17:00"
+            }
+          })}
+        </script>
+        
+        {/* Structured data for Service */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "serviceType": "Tvorba webových stránek",
+            "provider": {
+              "@type": "Organization",
+              "name": "Digitální kováři"
+            },
+            "areaServed": "Česká republika",
+            "offers": {
+              "@type": "Offer",
+              "price": "6000",
+              "priceCurrency": "CZK"
+            }
+          })}
+        </script>
       </Helmet>
       <Navigation />
       <HeroSection />

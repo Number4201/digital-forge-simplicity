@@ -101,47 +101,20 @@ const HeroSection = () => {
             Vytváříme weby, které pracují za vás. S integrovanými AI chatboty, automatickým rezervačním systémem a propojením s Google kalendářem.
           </p>
           
-          {/* Bottom promotional boxes with arrows pointing to buttons */}
-          <div className="relative">
-            {/* Left promo box */}
-            <div className="absolute bottom-0 left-0 md:left-8 lg:left-24 z-10 max-w-[180px] md:max-w-[220px] text-center hidden md:block">
-              <div className="bg-background/50 backdrop-blur-sm p-4 rounded-lg border border-white/10">
-                <p className="text-sm md:text-base font-medium text-white">
-                  Bezplatná konzultace vašeho projektu
-                </p>
-                <div className="mt-2 flex justify-center">
-                  <ArrowRight className="h-6 w-6 text-primary animate-pulse-slow transform rotate-[10deg]" />
-                </div>
-              </div>
-            </div>
-
-            {/* Right promo box */}
-            <div className="absolute bottom-0 right-0 md:right-8 lg:right-24 z-10 max-w-[180px] md:max-w-[220px] text-center hidden md:block">
-              <div className="bg-background/50 backdrop-blur-sm p-4 rounded-lg border border-white/10">
-                <p className="text-sm md:text-base font-medium text-white">
-                  Vyberte si z našich balíčků
-                </p>
-                <div className="mt-2 flex justify-center">
-                  <ArrowRight className="h-6 w-6 text-primary animate-pulse-slow transform -rotate-[10deg]" />
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
-              <Button 
-                className="bg-primary/90 hover:bg-primary text-white font-medium rounded-md px-8 py-6 text-lg transition-all min-w-[200px]"
-                onClick={() => setConsultationOpen(true)}
-              >
-                Konzultace zdarma
-              </Button>
-              <Button 
-                variant="outline" 
-                className="bg-transparent border-white/20 text-white font-medium rounded-md px-8 py-6 text-lg hover:bg-white/5 transition-all min-w-[200px]"
-                onClick={scrollToPricing}
-              >
-                Balíčky
-              </Button>
-            </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+            <Button 
+              className="bg-primary/90 hover:bg-primary text-white font-medium rounded-md px-8 py-6 text-lg transition-all min-w-[200px]"
+              onClick={() => setConsultationOpen(true)}
+            >
+              Konzultace zdarma
+            </Button>
+            <Button 
+              variant="outline" 
+              className="bg-transparent border-white/20 text-white font-medium rounded-md px-8 py-6 text-lg hover:bg-white/5 transition-all min-w-[200px]"
+              onClick={scrollToPricing}
+            >
+              Balíčky
+            </Button>
           </div>
         </div>
       </div>
