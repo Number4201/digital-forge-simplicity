@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowDown, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -65,29 +64,7 @@ const HeroSection = () => {
         <div className="absolute -bottom-[30%] -right-[50%] w-[120%] h-[120%] rounded-full bg-primary/5 animate-spin-slow"></div>
       </div>
 
-      {/* Left promotional text with arrow */}
-      <div className="absolute left-8 md:left-24 top-1/3 z-10 max-w-[200px] md:max-w-[250px] text-center">
-        <div className="relative">
-          <p className="text-md md:text-lg font-medium text-white">
-            Webové stránky do pár dnů a kvalitně
-          </p>
-          <div className="mt-4 flex justify-center">
-            <ArrowRight className="h-8 w-8 text-primary animate-pulse-slow transform rotate-[30deg]" />
-          </div>
-        </div>
-      </div>
-
-      {/* Right promotional text with arrow */}
-      <div className="absolute right-8 md:right-24 top-1/3 z-10 max-w-[200px] md:max-w-[250px] text-center">
-        <div className="relative">
-          <p className="text-md md:text-lg font-medium text-white">
-            Webové stránky do pár dnů a kvalitně
-          </p>
-          <div className="mt-4 flex justify-center">
-            <ArrowRight className="h-8 w-8 text-primary animate-pulse-slow transform -rotate-[30deg]" />
-          </div>
-        </div>
-      </div>
+      {/* Removed text boxes at the top */}
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 z-10">
         <div className="space-y-12 text-center max-w-4xl mx-auto animate-fade-in">
