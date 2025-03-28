@@ -94,13 +94,17 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>Tvorba webových stránek rychle a levně | Digitální kováři</title>
+        <title>Tvorba webových stránek rychle a kvalitně | Digitální kováři</title>
         <meta name="description" content="Vytváříme profesionální webové stránky rychle a za dostupné ceny. S AI chatboty, rezervačním systémem a propojením s Google kalendářem." />
-        <meta name="keywords" content="tvorba webových stránek, webdesign, profesionální web, AI chatbot, rezervační systém, levné weby" />
+        <meta name="keywords" content="tvorba webových stránek, webdesign, profesionální web, AI chatbot, rezervační systém" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
         <link rel="preconnect" href="https://fonts.cdnfonts.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="canonical" href="https://digitalnikovari.cz" />
+        
+        {/* Preload critical assets for better performance */}
+        <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/montserrat.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         
         {/* Structured data for LocalBusiness */}
         <script type="application/ld+json">

@@ -24,6 +24,9 @@ interface ContactFormData {
   email: string;
   subject?: string;
   message: string;
+  phone?: string;
+  company?: string;
+  form_type?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -33,10 +36,11 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, subject = "", message }: ContactFormData = await req.json();
+    const formData: ContactFormData = await req.json();
+    const { name, email, subject = "", message, phone, company, form_type } = formData;
 
     // Logging data received for debugging
-    console.log("Received form data:", { name, email, subject, message });
+    console.log("Received form data:", formData);
 
     // Validace dat
     if (!name || !email || !message) {
@@ -61,40 +65,50 @@ const handler = async (req: Request): Promise<Response> => {
     
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Uložení do databáze
-    try {
-      const { data, error: dbError } = await supabase
-        .from("contact_form_submissions")
-        .insert([{ name, email, message }]);
-
-      if (dbError) {
-        console.error("Chyba při ukládání do databáze:", dbError);
-        // Pokračujeme s odesláním e-mailu i když se nepodařilo uložit do databáze
-      } else {
-        console.log("Data uložena do databáze:", data);
-      }
-    } catch (dbError) {
-      console.error("Exception při ukládání do databáze:", dbError);
-    }
-
     // Odeslání e-mailu
     try {
       console.log("Sending email with Resend");
       console.log("To:", NOTIFICATION_EMAIL);
       console.log("From:", FROM_EMAIL);
       
+      // Enhance email subject with form type if available
+      const emailSubject = form_type 
+        ? `Nový kontakt [${form_type}]: ${subject}`
+        : `Nový kontakt: ${subject || "Kontaktní formulář"}`;
+      
+      // Enhance email content with additional fields if available
+      let emailContent = `
+        <h1>Nový kontaktní formulář</h1>
+        <p><strong>Jméno:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+      `;
+      
+      if (phone) {
+        emailContent += `<p><strong>Telefon:</strong> ${phone}</p>`;
+      }
+      
+      if (company) {
+        emailContent += `<p><strong>Firma:</strong> ${company}</p>`;
+      }
+      
+      if (form_type) {
+        emailContent += `<p><strong>Typ formuláře:</strong> ${form_type}</p>`;
+      }
+      
+      if (subject) {
+        emailContent += `<p><strong>Předmět:</strong> ${subject}</p>`;
+      }
+      
+      emailContent += `
+        <p><strong>Zpráva:</strong></p>
+        <p>${message.replace(/\n/g, "<br>")}</p>
+      `;
+      
       const emailResponse = await resend.emails.send({
         from: `Digitální kováři <${FROM_EMAIL}>`,
         to: [NOTIFICATION_EMAIL],
-        subject: `Nový kontakt: ${subject || "Kontaktní formulář"}`,
-        html: `
-          <h1>Nový kontaktní formulář</h1>
-          <p><strong>Jméno:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          ${subject ? `<p><strong>Předmět:</strong> ${subject}</p>` : ""}
-          <p><strong>Zpráva:</strong></p>
-          <p>${message.replace(/\n/g, "<br>")}</p>
-        `,
+        subject: emailSubject,
+        html: emailContent,
       });
 
       console.log("E-mail response:", JSON.stringify(emailResponse));

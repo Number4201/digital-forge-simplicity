@@ -3,7 +3,7 @@ import React from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { X, Clock, Check, Zap } from 'lucide-react';
+import { X, Clock, Check, Zap, Loader2 } from 'lucide-react';
 import { 
   Dialog, 
   DialogContent, 
@@ -26,6 +26,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { supabase } from "@/integrations/supabase/client";
 
 // Validation schema for the form
 const formSchema = z.object({
@@ -86,6 +87,7 @@ const PackageSelectionModal = ({
 }: PackageSelectionModalProps) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -101,16 +103,68 @@ const PackageSelectionModal = ({
 
   if (!selectedPackage) return null;
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Form submitted:", data, "Selected package:", selectedPackage);
+  const onSubmit = async (data: FormValues) => {
+    setIsSubmitting(true);
     
-    toast({
-      title: "Formulář odeslán",
-      description: "Děkujeme za váš zájem, brzy se vám ozveme.",
-    });
-    
-    form.reset();
-    onOpenChange(false);
+    try {
+      // First save to Supabase database
+      const { error: dbError } = await supabase
+        .from('contact_form_submissions')
+        .insert({
+          form_type: 'package_selection',
+          name: data.name,
+          email: data.email || '',
+          phone: data.phone || null,
+          company: data.company || null,
+          message: `Zájem o balíček: ${selectedPackage.name}`,
+          website_type: data.websiteType,
+          questions: data.questions || null,
+          package_name: selectedPackage.name,
+          express_option: showExpressOption,
+        });
+      
+      if (dbError) throw dbError;
+      
+      // Then call the edge function to send email notification
+      const messageBody = `
+Zájem o balíček: ${selectedPackage.name}
+${showExpressOption ? '(s Express dodáním)' : ''}
+
+Jméno: ${data.name}
+${data.company ? `Firma: ${data.company}` : ''}
+${data.email ? `Email: ${data.email}` : ''}
+${data.phone ? `Telefon: ${data.phone}` : ''}
+
+O jaký web půjde: ${data.websiteType}
+${data.questions ? `Dotazy: ${data.questions}` : ''}
+      `;
+      
+      await supabase.functions.invoke('contact-form', {
+        body: { 
+          name: data.name, 
+          email: data.email || 'neposkytnut@email.cz', 
+          subject: `Objednávka balíčku: ${selectedPackage.name}`, 
+          message: messageBody
+        }
+      });
+      
+      toast({
+        title: "Formulář odeslán",
+        description: "Děkujeme za váš zájem, brzy se vám ozveme.",
+      });
+      
+      form.reset();
+      onOpenChange(false);
+    } catch (error: any) {
+      console.error('Chyba při odesílání formuláře:', error);
+      toast({
+        title: "Chyba",
+        description: error.message || "Něco se pokazilo. Zkuste to prosím později.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -277,8 +331,15 @@ const PackageSelectionModal = ({
             </div>
 
             <DialogFooter className="mt-6 sm:mt-8">
-              <Button type="submit" className="w-full">
-                Odeslat objednávku
+              <Button type="submit" disabled={isSubmitting} className="w-full">
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Odesílám...
+                  </>
+                ) : (
+                  "Odeslat objednávku"
+                )}
               </Button>
             </DialogFooter>
           </form>

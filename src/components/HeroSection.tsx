@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ArrowDown, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,12 +12,14 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from "@/integrations/supabase/client";
 
 const HeroSection = () => {
   const [consultationOpen, setConsultationOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [note, setNote] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const scrollToContact = () => {
@@ -30,7 +33,7 @@ const HeroSection = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email && !phone) {
@@ -42,18 +45,52 @@ const HeroSection = () => {
       return;
     }
     
-    // Here you would normally send the data to your backend
-    console.log("Form submitted:", { email, phone, note });
+    setIsSubmitting(true);
     
-    toast({
-      title: "Úspěšně odesláno",
-      description: "Brzy vás budeme kontaktovat",
-    });
-    
-    setConsultationOpen(false);
-    setEmail('');
-    setPhone('');
-    setNote('');
+    try {
+      // Save to Supabase
+      const { error } = await supabase
+        .from('contact_form_submissions')
+        .insert({
+          form_type: 'quick_consultation',
+          name: 'Rychlá konzultace',
+          email: email || '',
+          phone: phone || null,
+          message: note || 'Zájem o rychlou konzultaci',
+          notes: note || null
+        });
+
+      if (error) throw error;
+
+      // Also call the edge function to send email notification
+      await supabase.functions.invoke('contact-form', {
+        body: { 
+          name: 'Rychlá konzultace', 
+          email: email || 'neposkytnut@email.cz', 
+          subject: 'Žádost o konzultaci', 
+          message: `Kontakt: ${email || ''}, Telefon: ${phone || ''}, Poznámka: ${note || 'Bez poznámky'}`
+        }
+      });
+      
+      toast({
+        title: "Úspěšně odesláno",
+        description: "Brzy vás budeme kontaktovat",
+      });
+      
+      setConsultationOpen(false);
+      setEmail('');
+      setPhone('');
+      setNote('');
+    } catch (error: any) {
+      console.error('Chyba při odesílání formuláře:', error);
+      toast({
+        title: "Chyba",
+        description: error.message || "Něco se pokazilo. Zkuste to prosím později.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -82,6 +119,7 @@ const HeroSection = () => {
             <Button 
               className="bg-primary/90 hover:bg-primary text-white font-medium rounded-md px-8 py-6 text-lg transition-all min-w-[200px]"
               onClick={() => setConsultationOpen(true)}
+              disabled={isSubmitting}
             >
               Konzultace zdarma
             </Button>
@@ -155,16 +193,6 @@ const HeroSection = () => {
                 placeholder="Např. psát na whatsapp a pod."
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                onFocus={(e) => {
-                  if (e.target.value === "Např. psát na whatsapp a pod.") {
-                    setNote("");
-                  }
-                }}
-                onBlur={(e) => {
-                  if (e.target.value === "") {
-                    setNote("Např. psát na whatsapp a pod.");
-                  }
-                }}
                 className="w-full"
               />
             </div>
@@ -172,7 +200,9 @@ const HeroSection = () => {
               <Button type="button" variant="outline" onClick={() => setConsultationOpen(false)}>
                 Zrušit
               </Button>
-              <Button type="submit">Odeslat</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Odesílám..." : "Odeslat"}
+              </Button>
             </div>
           </form>
         </DialogContent>

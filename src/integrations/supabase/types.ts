@@ -11,25 +11,55 @@ export type Database = {
     Tables: {
       contact_form_submissions: {
         Row: {
+          company: string | null
           created_at: string | null
           email: string
+          express_option: boolean | null
+          form_type: string | null
           id: number
           message: string
           name: string
+          notes: string | null
+          package_name: string | null
+          phone: string | null
+          questions: string | null
+          status: string | null
+          subject: string | null
+          website_type: string | null
         }
         Insert: {
+          company?: string | null
           created_at?: string | null
           email: string
+          express_option?: boolean | null
+          form_type?: string | null
           id?: never
           message: string
           name: string
+          notes?: string | null
+          package_name?: string | null
+          phone?: string | null
+          questions?: string | null
+          status?: string | null
+          subject?: string | null
+          website_type?: string | null
         }
         Update: {
+          company?: string | null
           created_at?: string | null
           email?: string
+          express_option?: boolean | null
+          form_type?: string | null
           id?: never
           message?: string
           name?: string
+          notes?: string | null
+          package_name?: string | null
+          phone?: string | null
+          questions?: string | null
+          status?: string | null
+          subject?: string | null
+          website_type?: string | null
         }
         Relationships: []
       }

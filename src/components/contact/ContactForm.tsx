@@ -32,20 +32,25 @@ const ContactForm = () => {
     setIsSubmitting(true);
     
     try {
-      // Logging the request for debugging
-      console.log("Submitting form with data:", { name, email, subject, message });
+      // First save to Supabase database directly
+      const { error: dbError } = await supabase
+        .from('contact_form_submissions')
+        .insert({
+          form_type: 'contact_page',
+          name: name || 'Neznámý',
+          email,
+          subject: subject || 'Kontaktní formulář',
+          message,
+        });
       
-      // Volání Supabase edge funkce pro zpracování kontaktního formuláře
-      const { error, data } = await supabase.functions.invoke('contact-form', {
+      if (dbError) throw dbError;
+      
+      // Then call the edge function to send email notification
+      const { error } = await supabase.functions.invoke('contact-form', {
         body: { name, email, subject, message }
       });
       
-      console.log("Response from edge function:", data);
-      
-      if (error) {
-        console.error("Edge function error:", error);
-        throw new Error(error.message);
-      }
+      if (error) throw error;
       
       toast({
         title: "Zpráva odeslána",
