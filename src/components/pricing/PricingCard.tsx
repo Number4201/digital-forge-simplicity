@@ -1,134 +1,98 @@
-
 import React from 'react';
+import { Check, Clock, ArrowRight, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowUpRight, Clock, Check, Shield } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 import { PricingTier } from './PackageTypes';
 
 interface PricingCardProps {
   tier: PricingTier;
   index: number;
   expressOptionId: string | null;
-  toggleExpressOption: (tierId: string) => void;
+  toggleExpressOption: (id: string) => void;
   openPackageModal: (tier: PricingTier) => void;
 }
 
 const PricingCard = ({ 
   tier, 
   index, 
-  expressOptionId,
+  expressOptionId, 
   toggleExpressOption,
-  openPackageModal
+  openPackageModal 
 }: PricingCardProps) => {
+  const isPopular = tier.popular === true;
+  const showExpressOption = tier.expressOption !== undefined;
+  const isExpressEnabled = expressOptionId === tier.id;
+
   return (
-    <Card 
-      className={cn(
-        "relative border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300 h-full transform hover:-translate-y-1 hover:shadow-lg",
-        "animate-fade-in [animation-delay:var(--delay)]",
-        tier.popular ? "border-primary/40 shadow-[0_0_15px_rgba(155,135,245,0.1)]" : ""
+    <div className={`relative rounded-lg border shadow-md overflow-hidden flex flex-col ${isPopular ? 'border-primary/50' : 'border-secondary/50'}`}>
+      {isPopular && (
+        <Badge className="absolute top-3 right-3 rounded-full uppercase text-xs font-bold tracking-wider z-10">
+          Popular
+        </Badge>
       )}
-      style={{ '--delay': `${index * 150}ms` } as React.CSSProperties}
-    >
-      {tier.popular && (
-        <div className="absolute -top-4 left-0 right-0 flex justify-center">
-          <span className="bg-primary px-4 py-1 rounded-full text-xs font-medium text-primary-foreground">
-            Nejoblíbenější
-          </span>
-        </div>
-      )}
-      <CardHeader>
-        <CardTitle className="text-xl md:text-2xl font-display mb-2">{tier.name}</CardTitle>
-        <CardDescription className="text-muted-foreground min-h-[60px]">
-          {tier.description}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div>
-          <div className="flex items-baseline gap-2">
-            {tier.discountPrice ? (
-              <>
-                <span className="text-2xl md:text-3xl font-bold font-display">{tier.discountPrice.toLocaleString()} Kč</span>
-                <span className="text-lg md:text-xl text-muted-foreground line-through">{tier.price.toLocaleString()} Kč</span>
-              </>
-            ) : (
-              <span className="text-2xl md:text-3xl font-bold font-display">{tier.price.toLocaleString()} Kč</span>
-            )}
-          </div>
+
+      <div className="p-6 flex-grow">
+        <h3 className="text-2xl font-semibold text-center font-display">{tier.name}</h3>
+        <p className="text-muted-foreground text-center mt-2">{tier.description}</p>
+
+        <div className="flex items-baseline justify-center mt-6">
+          {tier.discountPrice ? (
+            <>
+              <span className="text-3xl font-bold font-display">{tier.discountPrice.toLocaleString()} Kč</span>
+              <span className="ml-1 text-muted-foreground line-through">{tier.price.toLocaleString()} Kč</span>
+            </>
+          ) : (
+            <span className="text-3xl font-bold font-display">{tier.price.toLocaleString()} Kč</span>
+          )}
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mt-2">
           <Clock className="h-4 w-4" />
-          <span>Dodání: <strong className="text-foreground">{tier.deliveryTime}</strong></span>
+          <span>Dodání do {tier.deliveryTime}</span>
         </div>
 
-        {tier.securityCertificate && (
-          <div className="flex items-center gap-2 text-sm border border-border/50 rounded-md p-2 bg-secondary/50">
-            <Shield className="h-4 w-4 text-green-500" />
-            <div>
-              <span className="font-medium text-foreground">{tier.securityCertificate.name}</span>
-              {tier.securityCertificate.description && (
-                <p className="text-xs text-muted-foreground">{tier.securityCertificate.description}</p>
-              )}
-              {tier.securityCertificate.discount && (
-                <p className="text-xs text-emerald-500 font-medium">Se slevou 30%</p>
-              )}
-            </div>
-          </div>
-        )}
-
-        {tier.expressOption && (
-          <div className="mt-4">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="w-full flex justify-between items-center border-dashed"
-              onClick={() => toggleExpressOption(tier.id)}
-            >
-              <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-yellow-500" />
-                <span>Express dodání</span>
-              </div>
-              <ArrowUpRight className={cn("h-4 w-4 transition-transform", expressOptionId === tier.id ? "rotate-90" : "")} />
-            </Button>
-            
-            {expressOptionId === tier.id && tier.expressOption && (
-              <div className="mt-3 p-3 bg-secondary/60 rounded-md text-sm">
-                <div className="font-medium mb-1">Express do {tier.expressOption.deliveryTime}</div>
-                <div className="flex items-baseline gap-2 mb-2">
-                  {tier.expressOption.discountPrice ? (
-                    <>
-                      <span className="font-bold">+{tier.expressOption.discountPrice.toLocaleString()} Kč</span>
-                      <span className="text-muted-foreground line-through text-xs">+{tier.expressOption.price.toLocaleString()} Kč</span>
-                    </>
-                  ) : (
-                    <span className="font-bold">+{tier.expressOption.price.toLocaleString()} Kč</span>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        <ul className="space-y-2.5">
+        <ul className="mt-8 space-y-3">
           {tier.features.map((feature, index) => (
-            <li key={index} className="flex items-start gap-2 text-sm">
-              <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+            <li key={index} className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
               <span>{feature}</span>
             </li>
           ))}
         </ul>
-      </CardContent>
-      <CardFooter>
-        <Button 
-          className="w-full" 
-          variant={tier.popular ? "default" : "outline"}
-          onClick={() => openPackageModal(tier)}
-        >
-          Vybrat balíček
+      </div>
+
+      {showExpressOption && (
+        <div className="p-6 bg-secondary/50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Zap className="h-4 w-4 text-yellow-500" />
+              <span className="text-sm font-medium">Expresní doručení</span>
+            </div>
+            <Button 
+              variant="outline"
+              size="sm"
+              onClick={() => toggleExpressOption(tier.id)}
+            >
+              {isExpressEnabled ? 'Zrušit' : 'Aktivovat'}
+            </Button>
+          </div>
+          {isExpressEnabled && tier.expressOption && (
+            <div className="mt-4 text-sm text-muted-foreground">
+              Dokončíme váš web do {tier.expressOption.deliveryTime} za příplatek 
+              {tier.expressOption.discountPrice 
+                ? ` ${tier.expressOption.discountPrice.toLocaleString()} Kč`
+                : ` ${tier.expressOption.price.toLocaleString()} Kč`}
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className="p-6 border-t border-secondary/50">
+        <Button className="w-full justify-center gap-2" onClick={() => openPackageModal(tier)}>
+          Objednat <ArrowRight className="w-4 h-4" />
         </Button>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 };
 
