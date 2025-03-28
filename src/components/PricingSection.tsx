@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowUpRight, Clock, Check, Zap, Shield } from 'lucide-react';
+import { ArrowUpRight, Clock, Check, Zap, Shield, Map } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import PackageSelectionModal from './PackageSelectionModal';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -33,8 +33,7 @@ const pricingTiers: PricingTier[] = [
     id: 'basic',
     name: 'Prezentační web',
     description: 'Jednoduchá šablona pro základní prezentaci vašeho podnikání',
-    price: 3000,
-    discountPrice: 1800,
+    price: 6000,
     deliveryTime: '3 dny',
     features: [
       'Responzivní design',
@@ -42,6 +41,7 @@ const pricingTiers: PricingTier[] = [
       'Tvorba obsahu v ceně',
       'Kontaktní formulář',
       'Napojení na Google Analytics',
+      'Správa viditelnosti na Google Mapách',
     ],
     securityCertificate: {
       name: 'SSL certifikát',
@@ -52,7 +52,7 @@ const pricingTiers: PricingTier[] = [
     id: 'custom',
     name: 'Prémiový web',
     description: 'Web na míru s pokročilými funkcemi podle vašich požadavků',
-    price: 5000,
+    price: 13000,
     deliveryTime: '14 dní',
     popular: true,
     features: [
@@ -78,7 +78,7 @@ const pricingTiers: PricingTier[] = [
     id: 'ecommerce',
     name: 'Byznys řešení',
     description: 'Komplexní web s e-shopem a vlastní databází',
-    price: 27000,
+    price: 33000,
     deliveryTime: '30 dní',
     features: [
       'Vše z Prémiového webu',

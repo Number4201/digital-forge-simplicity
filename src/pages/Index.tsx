@@ -38,7 +38,25 @@ const Index = () => {
 
     // Preload key resources after main content is loaded
     const preloadResources = () => {
-      // Add any critical resources that need preloading here
+      // Preload critical images or assets for mobile optimization
+      if (isMobile) {
+        // Optimize for mobile by delaying non-critical resources
+        setTimeout(() => {
+          const links = Array.from(document.querySelectorAll('a[href^="#"]'));
+          links.forEach(link => {
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              const targetId = link.getAttribute('href')?.substring(1);
+              if (targetId) {
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                  targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+              }
+            });
+          });
+        }, 1000);
+      }
     };
     
     // Wait until idle to preload non-critical resources
@@ -71,7 +89,7 @@ const Index = () => {
       observer.disconnect();
       window.removeEventListener('hashchange', handleHashChange);
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
