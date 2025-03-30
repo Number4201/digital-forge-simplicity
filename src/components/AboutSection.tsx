@@ -1,6 +1,5 @@
 
 import React from 'react';
-import LazyImage from './LazyImage';
 import { Check, Sparkles } from 'lucide-react';
 
 const aboutPoints = [
@@ -16,17 +15,17 @@ const AboutSection = () => {
   return (
     <section id="about" className="section-padding bg-background">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="order-2 lg:order-1 animate-fade-in">
-            <h2 className="section-title">Naše filosofie</h2>
-            <p className="text-xl text-muted-foreground mb-8">
+        <div className="flex flex-col items-center">
+          <div className="animate-fade-in max-w-3xl mx-auto text-center">
+            <h2 className="section-title text-center">Naše filosofie</h2>
+            <p className="text-xl text-muted-foreground mb-8 text-center">
               V Digitalní kováři přistupujeme k tvorbě webů jako k řemeslu. Naším cílem je vytvářet 
               webové stránky, které nejsou jen vizuálně atraktivní, ale především efektivní 
               nástroje pro váš byznys. Spojujeme moderní technologie s prověřenými postupy, 
               abychom vám poskytli řešení, které generuje reálné výsledky.
             </p>
 
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 mx-auto">
               {aboutPoints.map((point, index) => (
                 <div 
                   key={index} 
@@ -45,24 +44,12 @@ const AboutSection = () => {
               ))}
             </div>
 
-            <div className="mt-12 text-lg">
-              <div className="italic text-muted-foreground border-l-4 border-accent/50 pl-4 py-2 flex items-center bg-secondary/20 rounded-r-lg">
+            <div className="mt-12 text-lg mx-auto">
+              <div className="italic text-muted-foreground border-l-4 border-accent/50 pl-4 py-2 flex items-center bg-secondary/20 rounded-r-lg max-w-md mx-auto">
                 <Sparkles className="h-5 w-5 text-accent mr-2" />
                 <p>"Digitální řemeslo s důrazem na výsledky."</p>
               </div>
             </div>
-          </div>
-
-          <div className="order-1 lg:order-2 relative flex justify-center items-center mt-12 lg:mt-32">
-            <div className="relative overflow-hidden rounded-full aspect-square animate-circle-glow w-3/4 max-w-[300px]">
-              <LazyImage 
-                src="/lovable-uploads/9bf0c41e-9d09-48a2-bffa-10bf9b26e000.png" 
-                alt="Digitální cloud - propojená data a technologie"
-                className="object-cover rounded-full"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/30 to-transparent rounded-full"></div>
-            </div>
-            <div className="absolute -bottom-8 -right-8 w-64 h-64 rounded-full bg-primary/5 filter blur-3xl"></div>
           </div>
         </div>
       </div>
