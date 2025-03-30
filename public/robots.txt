@@ -2,6 +2,7 @@
 # Allow all search engines to crawl the site
 User-agent: *
 Allow: /
+Disallow:
 
 # Sitemap location
 Sitemap: https://digitalnikovari.cz/sitemap.xml
@@ -9,19 +10,20 @@ Sitemap: https://digitalnikovari.cz/sitemap.xml
 # Specific rules for major search engines
 User-agent: Googlebot
 Allow: /
+Disallow:
 
 User-agent: Bingbot
 Allow: /
+Disallow:
 
 User-agent: Yandex
 Allow: /
+Disallow: 
 
 User-agent: Twitterbot
 Allow: /
+Disallow:
 
 User-agent: facebookexternalhit
 Allow: /
-
-# Disallow irrelevant or internal pages if needed
-# Disallow: /admin/
-# Disallow: /internal/
+Disallow:
