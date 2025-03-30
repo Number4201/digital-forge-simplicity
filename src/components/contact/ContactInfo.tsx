@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { Phone, Mail, MapPin, Zap } from 'lucide-react';
+import { Phone, Mail, MapPin, Zap, MessageCircle } from 'lucide-react';
+import { WhatsappIcon } from 'lucide-react';
 
 const ContactInfo = () => {
   return (
@@ -40,6 +41,12 @@ const ContactInfo = () => {
           title="Adresa" 
           content="V.Vlčka 205, 273 51" 
         />
+        <ContactInfoItem 
+          icon={<MessageCircle className="h-5 w-5 text-[#25D366]" />} 
+          title="WhatsApp" 
+          content="+420 724 059 986"
+          link="https://wa.me/420724059986" 
+        />
       </div>
     </div>
   );
@@ -49,18 +56,29 @@ interface ContactInfoItemProps {
   icon: React.ReactNode;
   title: string;
   content: string;
+  link?: string;
 }
 
-const ContactInfoItem = ({ icon, title, content }: ContactInfoItemProps) => (
-  <div className="flex items-start gap-4">
-    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-      {icon}
+const ContactInfoItem = ({ icon, title, content, link }: ContactInfoItemProps) => {
+  const ContentElement = link ? (
+    <a href={link} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+      {content}
+    </a>
+  ) : (
+    <p className="text-muted-foreground">{content}</p>
+  );
+
+  return (
+    <div className="flex items-start gap-4">
+      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+        {icon}
+      </div>
+      <div>
+        <h4 className="text-base font-medium">{title}</h4>
+        {ContentElement}
+      </div>
     </div>
-    <div>
-      <h4 className="text-base font-medium">{title}</h4>
-      <p className="text-muted-foreground">{content}</p>
-    </div>
-  </div>
-);
+  );
+};
 
 export default ContactInfo;
