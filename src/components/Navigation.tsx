@@ -107,14 +107,14 @@ const Navigation = () => {
       {/* Mobile Menu */}
       <div
         className={cn(
-          'fixed inset-0 top-16 bg-background z-40 transform transition-transform duration-300 ease-in-out md:hidden',
+          'fixed inset-0 top-16 bg-background/95 backdrop-blur-md z-40 transform transition-transform duration-300 ease-in-out md:hidden shadow-lg',
           {
             'translate-x-0': mobileMenuOpen,
             'translate-x-full': !mobileMenuOpen,
           }
         )}
       >
-        <div className="flex flex-col p-8 space-y-8">
+        <div className="flex flex-col p-8 space-y-8 bg-background">
           {navItems.map((item) => (
             <a
               key={item.name}
